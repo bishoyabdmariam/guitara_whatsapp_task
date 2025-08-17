@@ -3,7 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_animations/flutter_staggered_animations.dart';
 import 'package:guitara_whatsapp_task/cubits/story_cubit.dart';
 import 'package:guitara_whatsapp_task/widgets/story_circle.dart';
+import 'package:guitara_whatsapp_task/screens/story_viewer_screen.dart';
+import 'package:guitara_whatsapp_task/screens/add_status_screen.dart';
 import 'package:guitara_whatsapp_task/theme/app_theme.dart';
+import 'package:guitara_whatsapp_task/models/story.dart';
 
 class StoriesScreen extends StatefulWidget {
   const StoriesScreen({super.key});
@@ -24,50 +27,12 @@ class _StoriesScreenState extends State<StoriesScreen> {
         backgroundColor: AppTheme.primaryGreen,
         foregroundColor: Colors.white,
         elevation: 1,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.camera_alt_outlined),
-            onPressed: () {
-              // TODO: Implement camera functionality
-            },
-          ),
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert),
-            onSelected: (value) {
-              // TODO: Implement menu actions
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'status_privacy',
-                child: Row(
-                  children: [
-                    Icon(Icons.privacy_tip),
-                    SizedBox(width: 8),
-                    Text('Status privacy'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'settings',
-                child: Row(
-                  children: [
-                    Icon(Icons.settings),
-                    SizedBox(width: 8),
-                    Text('Settings'),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
       body: BlocBuilder<StoryCubit, StoryState>(
         builder: (context, state) {
           if (state is StoryLoading) {
             return const Center(
-              child: CircularProgressIndicator(
-                color: AppTheme.primaryGreen,
-              ),
+              child: CircularProgressIndicator(color: AppTheme.primaryGreen),
             );
           }
 
@@ -76,11 +41,7 @@ class _StoriesScreenState extends State<StoriesScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.error_outline,
-                    size: 64,
-                    color: Colors.grey[400],
-                  ),
+                  Icon(Icons.error_outline, size: 64, color: Colors.grey[400]),
                   const SizedBox(height: 16),
                   Text(
                     'Error loading stories',
@@ -100,7 +61,9 @@ class _StoriesScreenState extends State<StoriesScreen> {
 
           if (state is StoryLoaded) {
             final stories = state.stories;
-            final myStories = stories.where((story) => story.isMyStory).toList();
+            final myStories = stories
+                .where((story) => story.isMyStory)
+                .toList();
             final otherStories = stories
                 .where((story) => !story.isMyStory)
                 .toList();
@@ -110,28 +73,85 @@ class _StoriesScreenState extends State<StoriesScreen> {
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 children: [
                   // My Status section
-                  if (myStories.isNotEmpty) ...[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
-                      child: Text(
-                        'My Status',
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          color: Colors.grey[600],
-                          fontWeight: FontWeight.w600,
-                        ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    child: Text(
+                      'My Status',
+                      style: theme.textTheme.titleMedium?.copyWith(
+                        color: Colors.grey[600],
+                        fontWeight: FontWeight.w600,
                       ),
                     ),
-                    SizedBox(
-                      height: 100,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(horizontal: 8),
-                        itemCount: myStories.length,
-                        itemBuilder: (context, index) {
-                          final story = myStories[index];
+                  ),
+                  SizedBox(
+                    height: 100,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      itemCount: myStories.length + 1, // +1 for add status
+                      itemBuilder: (context, index) {
+                        if (index == 0) {
+                          // Add status button
+                          return AnimationConfiguration.staggeredList(
+                            position: index,
+                            duration: const Duration(milliseconds: 375),
+                            child: SlideAnimation(
+                              horizontalOffset: 50.0,
+                              child: FadeInAnimation(
+                                child: GestureDetector(
+                                  onTap: () {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            const AddStatusScreen(),
+                                      ),
+                                    );
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.symmetric(
+                                      horizontal: 8,
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          width: 60,
+                                          height: 60,
+                                          decoration: BoxDecoration(
+                                            shape: BoxShape.circle,
+                                            color: Colors.grey[300],
+                                            border: Border.all(
+                                              color: Colors.grey[400]!,
+                                              width: 2,
+                                            ),
+                                          ),
+                                          child: const Icon(
+                                            Icons.add,
+                                            size: 30,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 8),
+                                        const Text(
+                                          'Add Status',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.w500,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          );
+                        } else {
+                          // My stories
+                          final story = myStories[index - 1];
                           return AnimationConfiguration.staggeredList(
                             position: index,
                             duration: const Duration(milliseconds: 375),
@@ -140,17 +160,17 @@ class _StoriesScreenState extends State<StoriesScreen> {
                               child: FadeInAnimation(
                                 child: MyStoryCircle(
                                   onTap: () {
-                                    _viewStory(story);
+                                    _viewStory(story, myStories, index - 1);
                                   },
                                 ),
                               ),
                             ),
                           );
-                        },
-                      ),
+                        }
+                      },
                     ),
-                    const Divider(height: 32),
-                  ],
+                  ),
+                  const Divider(height: 32),
 
                   // Recent updates section
                   Padding(
@@ -181,7 +201,13 @@ class _StoriesScreenState extends State<StoriesScreen> {
                           child: SlideAnimation(
                             verticalOffset: 50.0,
                             child: FadeInAnimation(
-                              child: _buildStoryTile(context, story, theme),
+                              child: _buildStoryTile(
+                                context,
+                                story,
+                                theme,
+                                otherStories,
+                                index,
+                              ),
                             ),
                           ),
                         );
@@ -194,46 +220,27 @@ class _StoriesScreenState extends State<StoriesScreen> {
           }
 
           return const Center(
-            child: CircularProgressIndicator(
-              color: AppTheme.primaryGreen,
-            ),
+            child: CircularProgressIndicator(color: AppTheme.primaryGreen),
           );
         },
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            onPressed: () {
-              // TODO: Implement add status functionality
-            },
-            backgroundColor: Colors.grey[300],
-            foregroundColor: AppTheme.primaryGreen,
-            mini: true,
-            child: const Icon(Icons.edit),
-          ),
-          const SizedBox(height: 16),
-          FloatingActionButton(
-            onPressed: () {
-              // TODO: Implement camera functionality
-            },
-            backgroundColor: AppTheme.primaryGreen,
-            foregroundColor: Colors.white,
-            child: const Icon(Icons.camera_alt),
-          ),
-        ],
       ),
     );
   }
 
-  Widget _buildStoryTile(BuildContext context, story, ThemeData theme) {
+  Widget _buildStoryTile(
+    BuildContext context,
+    Story story,
+    ThemeData theme,
+    List<Story> stories,
+    int index,
+  ) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: Material(
         color: Colors.transparent,
         child: InkWell(
           onTap: () {
-            _viewStory(story);
+            _viewStory(story, stories, index);
           },
           borderRadius: BorderRadius.circular(12),
           child: Container(
@@ -349,19 +356,55 @@ class _StoriesScreenState extends State<StoriesScreen> {
     }
   }
 
-  void _viewStory(story) {
+  void _viewStory(Story story, List<Story> stories, int index) {
     // Mark story as viewed
     context.read<StoryCubit>().markStoryAsViewed(story.id);
 
-    // TODO: Implement full-screen story viewer
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Viewing ${story.userName}\'s story'),
-        duration: const Duration(seconds: 2),
-        backgroundColor: AppTheme.primaryGreen,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+    // Find the person index in all stories
+    final allStories = context.read<StoryCubit>().stories;
+    final groupedStories = _groupStoriesByUser(allStories);
+
+    int personIndex = 0;
+    int storyIndex = 0;
+
+    for (int i = 0; i < groupedStories.length; i++) {
+      final personStories = groupedStories[i];
+      for (int j = 0; j < personStories.length; j++) {
+        if (personStories[j].id == story.id) {
+          personIndex = i;
+          storyIndex = j;
+          break;
+        }
+      }
+    }
+
+    // Navigate to story viewer
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => StoryViewerScreen(
+          allStories: allStories,
+          initialPersonIndex: personIndex,
+          initialStoryIndex: storyIndex,
+        ),
       ),
     );
+  }
+
+  List<List<Story>> _groupStoriesByUser(List<Story> stories) {
+    final Map<String, List<Story>> grouped = {};
+
+    for (var story in stories) {
+      if (!grouped.containsKey(story.userId)) {
+        grouped[story.userId] = [];
+      }
+      grouped[story.userId]!.add(story);
+    }
+
+    // Sort stories within each user by timestamp
+    for (var userStories in grouped.values) {
+      userStories.sort((a, b) => a.timestamp.compareTo(b.timestamp));
+    }
+
+    return grouped.values.toList();
   }
 }

@@ -51,9 +51,11 @@ class StoryCubit extends Cubit<StoryState> {
 
   List<Story> _stories = [];
 
+  List<Story> get stories => _stories;
+
   void loadStories() {
     emit(StoryLoading());
-    
+
     _stories = [
       Story(
         id: '1',
@@ -62,6 +64,7 @@ class StoryCubit extends Cubit<StoryState> {
         userAvatar: 'https://i.pravatar.cc/150?img=10',
         content: 'https://picsum.photos/400/600?random=1',
         timestamp: DateTime.now().subtract(const Duration(hours: 2)),
+        type: StoryType.image,
         isMyStory: true,
       ),
       Story(
@@ -69,8 +72,9 @@ class StoryCubit extends Cubit<StoryState> {
         userId: '2',
         userName: 'John Doe',
         userAvatar: 'https://i.pravatar.cc/150?img=1',
-        content: 'https://picsum.photos/400/600?random=2',
+        content: 'Having a great day! ☀️',
         timestamp: DateTime.now().subtract(const Duration(minutes: 30)),
+        type: StoryType.text,
         isViewed: false,
       ),
       Story(
@@ -80,6 +84,7 @@ class StoryCubit extends Cubit<StoryState> {
         userAvatar: 'https://i.pravatar.cc/150?img=2',
         content: 'https://picsum.photos/400/600?random=3',
         timestamp: DateTime.now().subtract(const Duration(minutes: 15)),
+        type: StoryType.image,
         isViewed: false,
       ),
       Story(
@@ -87,8 +92,9 @@ class StoryCubit extends Cubit<StoryState> {
         userId: '4',
         userName: 'Mike Johnson',
         userAvatar: 'https://i.pravatar.cc/150?img=3',
-        content: 'https://picsum.photos/400/600?random=4',
+        content: 'Coffee time! ☕',
         timestamp: DateTime.now().subtract(const Duration(minutes: 10)),
+        type: StoryType.text,
         isViewed: true,
       ),
       Story(
@@ -98,6 +104,7 @@ class StoryCubit extends Cubit<StoryState> {
         userAvatar: 'https://i.pravatar.cc/150?img=4',
         content: 'https://picsum.photos/400/600?random=5',
         timestamp: DateTime.now().subtract(const Duration(minutes: 5)),
+        type: StoryType.image,
         isViewed: false,
       ),
       Story(
@@ -105,8 +112,9 @@ class StoryCubit extends Cubit<StoryState> {
         userId: '6',
         userName: 'David Brown',
         userAvatar: 'https://i.pravatar.cc/150?img=5',
-        content: 'https://picsum.photos/400/600?random=6',
+        content: 'Working on something amazing! 💻',
         timestamp: DateTime.now().subtract(const Duration(minutes: 2)),
+        type: StoryType.text,
         isViewed: true,
       ),
       Story(
@@ -116,6 +124,7 @@ class StoryCubit extends Cubit<StoryState> {
         userAvatar: 'https://i.pravatar.cc/150?img=6',
         content: 'https://picsum.photos/400/600?random=7',
         timestamp: DateTime.now().subtract(const Duration(minutes: 1)),
+        type: StoryType.image,
         isViewed: false,
       ),
     ];

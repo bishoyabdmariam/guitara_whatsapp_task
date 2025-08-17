@@ -25,78 +25,6 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: AppTheme.primaryGreen,
         foregroundColor: Colors.white,
         elevation: 1,
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.camera_alt_outlined),
-            onPressed: () {
-              // TODO: Implement camera functionality
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () {
-              // TODO: Implement search functionality
-            },
-          ),
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert),
-            onSelected: (value) {
-              // TODO: Implement menu actions
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'new_group',
-                child: Row(
-                  children: [
-                    Icon(Icons.group_add),
-                    SizedBox(width: 8),
-                    Text('New group'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'new_broadcast',
-                child: Row(
-                  children: [
-                    Icon(Icons.broadcast_on_personal),
-                    SizedBox(width: 8),
-                    Text('New broadcast'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'whatsapp_web',
-                child: Row(
-                  children: [
-                    Icon(Icons.computer),
-                    SizedBox(width: 8),
-                    Text('WhatsApp Web'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'starred_messages',
-                child: Row(
-                  children: [
-                    Icon(Icons.star),
-                    SizedBox(width: 8),
-                    Text('Starred messages'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'settings',
-                child: Row(
-                  children: [
-                    Icon(Icons.settings),
-                    SizedBox(width: 8),
-                    Text('Settings'),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
       ),
       body: BlocBuilder<ChatCubit, ChatState>(
         builder: (context, state) {
@@ -210,6 +138,7 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         backgroundColor: AppTheme.primaryGreen,
         foregroundColor: Colors.white,
+        heroTag: 'home_fab',
         child: const Icon(Icons.chat),
       ),
     );

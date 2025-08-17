@@ -131,74 +131,8 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         actions: [
           IconButton(
-            icon: const Icon(Icons.video_call),
-            onPressed: () {
-              // TODO: Implement video call
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.call),
-            onPressed: () {
-              // TODO: Implement voice call
-            },
-          ),
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.more_vert),
-            onSelected: (value) {
-              // TODO: Implement menu actions
-            },
-            itemBuilder: (context) => [
-              const PopupMenuItem(
-                value: 'view_contact',
-                child: Row(
-                  children: [
-                    Icon(Icons.person),
-                    SizedBox(width: 8),
-                    Text('View contact'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'media',
-                child: Row(
-                  children: [
-                    Icon(Icons.photo_library),
-                    SizedBox(width: 8),
-                    Text('Media, links, and docs'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'search',
-                child: Row(
-                  children: [
-                    Icon(Icons.search),
-                    SizedBox(width: 8),
-                    Text('Search'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'mute',
-                child: Row(
-                  children: [
-                    Icon(Icons.notifications_off),
-                    SizedBox(width: 8),
-                    Text('Mute notifications'),
-                  ],
-                ),
-              ),
-              const PopupMenuItem(
-                value: 'wallpaper',
-                child: Row(
-                  children: [
-                    Icon(Icons.wallpaper),
-                    SizedBox(width: 8),
-                    Text('Change wallpaper'),
-                  ],
-                ),
-              ),
-            ],
+            icon: const Icon(Icons.close),
+            onPressed: () => Navigator.of(context).pop(),
           ),
         ],
       ),
@@ -251,13 +185,6 @@ class _ChatScreenState extends State<ChatScreen> {
             child: SafeArea(
               child: Row(
                 children: [
-                  IconButton(
-                    icon: const Icon(Icons.emoji_emotions_outlined),
-                    onPressed: () {
-                      // TODO: Implement emoji picker
-                    },
-                    color: Colors.grey[600],
-                  ),
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
@@ -284,38 +211,18 @@ class _ChatScreenState extends State<ChatScreen> {
                   const SizedBox(width: 8),
                   AnimatedContainer(
                     duration: const Duration(milliseconds: 200),
-                    child: _isComposing
-                        ? Container(
-                            decoration: const BoxDecoration(
-                              color: AppTheme.primaryGreen,
-                              shape: BoxShape.circle,
-                            ),
-                            child: IconButton(
-                              icon: const Icon(Icons.send),
-                              onPressed: () =>
-                                  _handleSubmitted(_messageController.text),
-                              color: Colors.white,
-                            ),
-                          )
-                        : Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.attach_file),
-                                onPressed: () {
-                                  // TODO: Implement file attachment
-                                },
-                                color: Colors.grey[600],
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.camera_alt),
-                                onPressed: () {
-                                  // TODO: Implement camera
-                                },
-                                color: Colors.grey[600],
-                              ),
-                            ],
-                          ),
+                    child: Container(
+                      decoration: const BoxDecoration(
+                        color: AppTheme.primaryGreen,
+                        shape: BoxShape.circle,
+                      ),
+                      child: IconButton(
+                        icon: const Icon(Icons.send),
+                        onPressed: () =>
+                            _handleSubmitted(_messageController.text),
+                        color: Colors.white,
+                      ),
+                    ),
                   ),
                 ],
               ),
